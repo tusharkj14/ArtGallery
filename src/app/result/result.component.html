@@ -1,0 +1,8 @@
+<div class="row">
+  <div *ngFor="let el of data" class="col-xl-4">
+    <a [routerLink]="['/open', el['id']]">
+      <app-list-item [imageurl]="retrieveURL(el, true)" [artistName]="el['artist_title']" [title]="el['title']"
+        class="w-100"></app-list-item>
+    </a>
+  </div>
+</div>

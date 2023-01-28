@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+form {
+  margin-top: 10%;
+  display: inline-block;
+}
+
+mat-radio-button {
+  margin: 0 12px;
+}
+
+input {
+  height: 36px;
+}
+
+mat-radio-group {
+  margin-bottom: 5px;
+}
