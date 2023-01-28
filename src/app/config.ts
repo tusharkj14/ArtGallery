@@ -1,5 +1,6 @@
 export const INFO_URL = 'https://api.artic.edu/api/v1/artworks/search?params=';
 export const IMAGE_URL = 'https://www.artic.edu/iiif/2/';
+export const IMAGE_API = ' https://api.artic.edu/api/v1/artworks/';
 export const LARGE_IMAGE_PART_URL = '/full/843,/0/default.jpg';
 export const SMALL_IMAGE_PART_URL = '/full/200,/0/default.jpg';
 export const ARTWORK_FIELDS = `

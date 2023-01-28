@@ -1,3 +1,6 @@
+<div *ngIf="data.length==0">
+  No Results Displayed
+</div>
 <div class="row">
   <div *ngFor="let el of data" class="col-xl-4">
     <a [routerLink]="['/open', el['id']]">

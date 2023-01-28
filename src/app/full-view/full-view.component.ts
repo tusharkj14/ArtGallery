@@ -17,13 +17,17 @@ export class FullViewComponent {
 
     this.route.paramMap.subscribe((res : ParamMap)=>{
       if(res.has('id')){
-        // console.log(res.get('id'));
+        // //console.log(res.get('id'));
         let id = res.get('id');
-        this.aserve.sendData().subscribe(arr=>{
-          console.log(arr);
-          let idx = arr['data'].findIndex((obj: keyable)=> obj['id']==id);
-          this.el = arr['data'][idx];
-          // console.log(this.el);
+        let q : keyable = {'id' : id};
+        const url = this.aserve.getUrl(q, false);
+        this.aserve.fetchUrl(url, false);
+
+        this.aserve.sendData(false).subscribe(arr=>{
+          //console.log(arr);
+          // let idx = arr['data'].findIndex((obj: keyable)=> obj['id']==id);
+          this.el = arr['data'];
+          //console.log(this.el);
           this.imageUrl = this.aserve.getImageUrl(this.el['image_id'] ,false);
         })
       }

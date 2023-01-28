@@ -14,7 +14,7 @@ export class ListItemComponent implements OnInit {
   @Input() artistName: string = '';
   @Input() title : string = '';
   ngOnInit(): void {
-    // console.log(this.imageurl);
+    // //console.log(this.imageurl);
 
   }
 

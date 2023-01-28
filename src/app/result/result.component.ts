@@ -12,10 +12,10 @@ import { keyable } from "../keyable.interface";
 export class ResultComponent implements OnInit {
 
   constructor(private Aserve : ArtworksService) { }
-  public data !: keyable[];
+  public data : keyable[] = [];
   getData(){
-    this.Aserve.sendData().subscribe(res=>{
-      // console.log(res['data']);
+    this.Aserve.sendData(true).subscribe(res=>{
+      // //console.log(res['data']);
       this.data = res['data'];
     });
   }
