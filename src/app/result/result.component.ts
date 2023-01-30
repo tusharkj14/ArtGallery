@@ -12,10 +12,14 @@ import { keyable } from "../keyable.interface";
 export class ResultComponent implements OnInit {
 
   constructor(private Aserve : ArtworksService) { }
+  public searchWas : String = '';
+  public categoryWas : String = '';
   public data : keyable[] = [];
+  public isLoading : boolean = false;
   getData(){
     this.Aserve.sendData(true).subscribe(res=>{
-      // //console.log(res['data']);
+      let q = this.Aserve.sendSearchQuery();
+      this.categoryWas = q['field']==='title' ? "Artworks" : "Artists", this.searchWas = q['searchQuery'];
       this.data = res['data'];
     });
   }
@@ -28,6 +32,9 @@ export class ResultComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.Aserve.sendLoadStatus().subscribe(res=>{
+      this.isLoading = res;
+    })
     this.getData();
   }
 

@@ -21,6 +21,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FullViewComponent } from './full-view/full-view.component';
 import { LandingComponent } from './landing/landing.component';
 import {MatDividerModule} from '@angular/material/divider';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import {MatDividerModule} from '@angular/material/divider';
     MatCardModule,
     FormsModule,
     FlexLayoutModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

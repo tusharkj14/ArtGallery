@@ -1,7 +1,11 @@
-<div *ngIf="data.length==0">
+<div *ngIf="isLoading" fxLayout="row" fxLayoutAlign="space-around center" style="height:100%">
+  <mat-spinner [diameter]="100" [strokeWidth]="5"></mat-spinner>
+</div>
+<div *ngIf="data.length==0 && !isLoading">
   No Results Displayed
 </div>
-<div class="row">
+<div class="row" *ngIf="!isLoading && data.length>0">
+  <h1 class="display-3 text-center">{{categoryWas}} titled <strong class="text-muted">"{{searchWas}}"</strong></h1>
   <div *ngFor="let el of data" class="col-xl-4">
     <a [routerLink]="['/open', el['id']]">
       <app-list-item [imageurl]="retrieveURL(el, true)" [artistName]="el['artist_title']" [title]="el['title']"

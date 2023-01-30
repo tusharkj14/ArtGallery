@@ -1,4 +1,7 @@
-<section>
+<div *ngIf="isLoading" fxLayout="row" fxLayoutAlign="space-around center" style="height:100%">
+  <mat-spinner [diameter]="100" [strokeWidth]="5"></mat-spinner>
+</div>
+<section *ngIf="!isLoading">
   <div class="row">
     <div class="col-md-6 gx-5 mb-4">
       <div class="bg-image hover-overlay ripple shadow-2-strong rounded-5" data-mdb-ripple-color="light">

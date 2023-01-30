@@ -10,6 +10,8 @@ export class ArtworksService {
   public artworks !: keyable;
   public dataSend = new ReplaySubject<keyable>(1) ;
   public imageDataSend = new Subject<keyable>() ;
+  public loadSpinner = new Subject<boolean>();
+  public searchQuery!: keyable;
   constructor() { }
 
   queryKeywords = function (categoryField: any, keywords: any) {
@@ -41,6 +43,8 @@ export class ArtworksService {
   getUrl(q: keyable, results: boolean){
     // let query!any;
     if (results){
+    this.searchQuery = q;
+
       let query = this.queryKeywords(q['field'], q['searchQuery']);
       return `${config.INFO_URL}${this.urlEncodeQuery(query)}`;
     }
@@ -48,8 +52,12 @@ export class ArtworksService {
     return `${config.IMAGE_API}${q['id']}`;
   }
 
+  sendSearchQuery(){
+    return this.searchQuery;
+  }
 
   async fetchUrl(url: string, results: boolean){
+    this.loadSpinner.next(true);
     const init = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json',
@@ -65,6 +73,7 @@ export class ArtworksService {
       this.imageDataSend.next(tempdata);
     }
 
+    this.loadSpinner.next(false);
     // //console.log(tempdata);
   }
 
@@ -73,6 +82,11 @@ export class ArtworksService {
   }
 
   sendData(results: boolean) :Observable<keyable>{
+    // this.loadSpinner.next(true);
     return results? this.dataSend : this.imageDataSend;
+  }
+
+  sendLoadStatus(): Observable<boolean>{
+    return this.loadSpinner;
   }
 }

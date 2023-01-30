@@ -13,8 +13,9 @@ export class FullViewComponent {
   public imageUrl : string = '#';
   constructor(private aserve: ArtworksService, private route: ActivatedRoute){}
   public el !: keyable;
+  public isLoading : boolean = false;
   ngOnInit(){
-
+    this.aserve.sendLoadStatus().subscribe(res=> this.isLoading = res);
     this.route.paramMap.subscribe((res : ParamMap)=>{
       if(res.has('id')){
         // //console.log(res.get('id'));
