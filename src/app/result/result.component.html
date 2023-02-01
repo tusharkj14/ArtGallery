@@ -4,10 +4,10 @@
 <div *ngIf="data.length==0 && !isLoading">
   No Results Displayed
 </div>
-<div class="row" *ngIf="!isLoading && data.length>0">
+<div class="row h-100 d-flex justify-content-center" *ngIf="!isLoading && data.length>0">
   <h1 class="display-3 text-center">{{categoryWas}} titled <strong class="text-muted">"{{searchWas}}"</strong></h1>
-  <div *ngFor="let el of data" class="col-xl-4">
-    <a [routerLink]="['/open', el['id']]">
+  <div *ngFor="let el of data" class="col-xl-3 m-xl-4">
+    <a [routerLink]="['/open', el['id']]" class="p-2">
       <app-list-item [imageurl]="retrieveURL(el, true)" [artistName]="el['artist_title']" [title]="el['title']"
         class="w-100"></app-list-item>
     </a>

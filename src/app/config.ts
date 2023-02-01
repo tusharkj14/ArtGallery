@@ -1,3 +1,5 @@
+import { keyable } from "./keyable.interface";
+
 export const INFO_URL = 'https://api.artic.edu/api/v1/artworks/search?params=';
 export const IMAGE_URL = 'https://www.artic.edu/iiif/2/';
 export const IMAGE_API = ' https://api.artic.edu/api/v1/artworks/';
@@ -20,7 +22,7 @@ export const ARTWORK_FIELDS = `
   config
 `;
 
-export const CATEGORY_FIELD = {
+export const CATEGORY_FIELD : keyable = {
   'Artwork': 'title',
   'Artist': 'artist_title',
 };

@@ -19,7 +19,8 @@ export class ResultComponent implements OnInit {
   getData(){
     this.Aserve.sendData(true).subscribe(res=>{
       let q = this.Aserve.sendSearchQuery();
-      this.categoryWas = q['field']==='title' ? "Artworks" : "Artists", this.searchWas = q['searchQuery'];
+      this.categoryWas = q['field'], this.searchWas = q['searchQuery'];
+      // console.log(q);
       this.data = res['data'];
     });
   }

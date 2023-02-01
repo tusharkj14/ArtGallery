@@ -14,7 +14,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { ResultComponent } from './result/result.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FooterComponent } from './footer/footer.component';
 import { ListItemComponent } from './list-item/list-item.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -48,7 +48,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     FormsModule,
     FlexLayoutModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

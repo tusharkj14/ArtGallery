@@ -11,18 +11,17 @@ import { keyable } from "../keyable.interface";
 })
 export class SearchSideComponent implements OnInit {
   public radios : any = "Artwork";
+  public searchInput: string = "";
   constructor(private Aserve : ArtworksService) { }
 
+
   onSubmit(form: NgForm) {
-    if (form.invalid) {
+    if (form.invalid || this.searchInput.length == 0) {
       return;
     }
-    //console.log(this.radios)
-    //console.log(form.value.search);
 
-    let field = '', searchQuery = form.value.search;
-    if (this.radios==='Artwork')  field = 'title';
-    else if (this.radios==='Artist')  field = 'artist_title';
+    let field = this.radios, searchQuery = form.value.search;
+
     let q : keyable = {
       'field' : field,
       'searchQuery' : searchQuery
@@ -38,6 +37,12 @@ export class SearchSideComponent implements OnInit {
     this.radios = e.value;
   }
   ngOnInit(): void {
+    let q : keyable = this.Aserve.sendSearchQuery();
+    if (Object.keys(q).length){
+      this.radios = q['field'];
+      this.searchInput = q['searchQuery'];
+      // console.log(q);
+    }
   }
 
 }

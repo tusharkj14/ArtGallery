@@ -11,7 +11,7 @@ export class ArtworksService {
   public dataSend = new ReplaySubject<keyable>(1) ;
   public imageDataSend = new Subject<keyable>() ;
   public loadSpinner = new Subject<boolean>();
-  public searchQuery!: keyable;
+  public searchQuery: keyable = {};
   constructor() { }
 
   queryKeywords = function (categoryField: any, keywords: any) {
@@ -38,14 +38,14 @@ export class ArtworksService {
       limit: config.RESULTS_LIMIT,
     };
   };
-  urlEncodeQuery = (q: { query: { bool: { must: ({ term: { is_public_domain: boolean; }; match?: undefined; } | { match: { [x: number]: { query: any; }; }; term?: undefined; })[]; }; }; fields: any; limit: any; }) => encodeURIComponent(JSON.stringify(q));
+  urlEncodeQuery = (q: keyable) => encodeURIComponent(JSON.stringify(q));
 
   getUrl(q: keyable, results: boolean){
     // let query!any;
     if (results){
     this.searchQuery = q;
 
-      let query = this.queryKeywords(q['field'], q['searchQuery']);
+      let query = this.queryKeywords(config.CATEGORY_FIELD[q['field']], q['searchQuery']);
       return `${config.INFO_URL}${this.urlEncodeQuery(query)}`;
     }
 

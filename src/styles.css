@@ -9,8 +9,3 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-
-.mat-grid-tile .mat-figure {
-  justify-content: flex-start;
-  align-items: flex-start;
-}

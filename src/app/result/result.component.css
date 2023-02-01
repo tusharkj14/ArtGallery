@@ -1,7 +1,15 @@
 :host {
-  overflow: auto;
+  /* overflow: auto; */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 a {
   text-decoration: none;
+}
+
+:host:-webkit-scrollbar {
+  display: none;
 }

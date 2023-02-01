@@ -4,6 +4,7 @@
 
 </mat-radio-group>
 <form (submit)="onSubmit(searchForm)" #searchForm="ngForm">
-  <input matInput name="search" type="search" ngModel placeholder="Search.." #SearchInput="ngModel" search />
+  <input matInput name="search" type="search" [(ngModel)]="searchInput" placeholder="Search.." #SearchInput="ngModel"
+    search />
   <button mat-raised-button color="warn" type="submit">Submit</button>
 </form>
