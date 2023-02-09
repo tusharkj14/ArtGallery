@@ -1,3 +1,21 @@
 .example-card {
-  max-width: 200px;
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.image {
+  height: 200px;
+  /* adjust as needed */
+  object-fit: contain;
+}
+
+.mat-card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: small;
+}
+
+.example-card:hover {
+  transform: scale(1.5);
 }

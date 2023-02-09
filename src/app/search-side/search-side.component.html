@@ -6,5 +6,6 @@
 <form (submit)="onSubmit(searchForm)" #searchForm="ngForm">
   <input matInput name="search" type="search" [(ngModel)]="searchInput" placeholder="Search.." #SearchInput="ngModel"
     search />
-  <button mat-raised-button color="warn" type="submit">Submit</button>
+  <button mat-icon-button color="primary" type="submit"><mat-icon>search</mat-icon></button>
+
 </form>
