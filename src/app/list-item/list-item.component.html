@@ -1,10 +1,15 @@
-<div class="mb-4">
-  <mat-card class="example-card ">
-
-    <img mat-card-image class="image" src="{{imageurl}}" alt="{{title}}">
-    <mat-card-content>
-      <mat-card-title>{{title}}</mat-card-title>
-      <mat-card-subtitle>{{artistName}}</mat-card-subtitle>
-    </mat-card-content>
-  </mat-card>
-</div>
+<article class="card">
+  <div class="thumb">
+    <div class="thumb-skeleton skeleton" *ngIf="!loaded"></div>
+    <img
+      [src]="imageurl"
+      [alt]="title"
+      loading="lazy"
+      (load)="onLoad()"
+      [class.loaded]="loaded" />
+  </div>
+  <div class="meta">
+    <h3 class="title" [title]="title">{{ title }}</h3>
+    <p class="artist" [title]="artistName">{{ artistName }}<span class="date" *ngIf="date"> &middot; {{ date }}</span></p>
+  </div>
+</article>

@@ -1,13 +1,40 @@
-<mat-toolbar>
-  <button (click)="homeBtnClick()" mat-icon-button class="example-icon" aria-label="Example icon-button with home icon">
-    <mat-icon>home</mat-icon>
-  </button>
-  <span> Art Gallery App</span>
-  <span class="example-spacer"></span>
-  <a mat-icon-button href="https://github.com/tusharkj14/ArtGallery" target="_blank" class="example-icon favorite-icon"
-    aria-label="Example icon-button with github icon">
+<header class="topbar">
+  <div class="topbar-inner">
+    <button type="button" class="brand" (click)="goHome()" aria-label="Go home">
+      <span class="brand-mark">
+        <mat-icon>palette</mat-icon>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">Art Gallery</span>
+        <span class="brand-sub">The Met collection</span>
+      </span>
+    </button>
 
-    <mat-icon>code</mat-icon>
+    <form class="search" (submit)="$event.preventDefault(); submit()">
+      <div class="segmented" role="tablist" aria-label="Search in">
+        <button type="button" role="tab" [attr.aria-selected]="category === 'Artwork'"
+          [class.active]="category === 'Artwork'" (click)="setCategory('Artwork')">Artwork</button>
+        <button type="button" role="tab" [attr.aria-selected]="category === 'Artist'"
+          [class.active]="category === 'Artist'" (click)="setCategory('Artist')">Artist</button>
+      </div>
+      <label class="search-field">
+        <mat-icon class="search-icon" aria-hidden="true">search</mat-icon>
+        <input type="search" name="query" [(ngModel)]="query"
+          [placeholder]="category === 'Artwork' ? 'Search artworks by title' : 'Search by artist'"
+          autocomplete="off" aria-label="Search" />
+        <button type="submit" class="search-submit" [disabled]="!query.trim()">Search</button>
+      </label>
+    </form>
 
-  </a>
-</mat-toolbar>
+    <div class="actions">
+      <button type="button" class="icon-btn" (click)="theme.toggle()"
+        [attr.aria-label]="theme.mode() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+        <mat-icon>{{ theme.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+      <a class="icon-btn" href="https://github.com/tusharkj14/ArtGallery" target="_blank" rel="noopener"
+        aria-label="View source on GitHub">
+        <mat-icon>code</mat-icon>
+      </a>
+    </div>
+  </div>
+</header>

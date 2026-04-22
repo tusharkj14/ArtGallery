@@ -1,15 +1,36 @@
-<div *ngIf="isLoading" fxLayout="row" fxLayoutAlign="space-around center" style="height:100%">
-  <mat-spinner [diameter]="100" [strokeWidth]="5"></mat-spinner>
-</div>
-<div *ngIf="data.length==0 && !isLoading">
-  No Results Displayed
-</div>
-<div class="row h-100 d-flex justify-content-center" *ngIf="!isLoading && data.length>0">
-  <h1 class="display-3 text-center">{{categoryWas}} titled <strong class="text-muted">"{{searchWas}}"</strong></h1>
-  <div *ngFor="let el of data" class="col-xl-3 m-xl-4">
-    <a [routerLink]="['/open', el['id']]" class="p-2">
-      <app-list-item [imageurl]="retrieveURL(el, true)" [artistName]="el['artist_title']" [title]="el['title']"
-        class="w-100"></app-list-item>
+<section class="results" *ngIf="hasSearched || isLoading">
+  <header class="results-header" *ngIf="!isLoading && hasSearched">
+    <h2 class="results-title">
+      <span class="results-count">{{ data.length }}</span>
+      {{ data.length === 1 ? 'result' : 'results' }}
+      <span class="results-for">for</span>
+      <span class="results-query">&ldquo;{{ searchWas }}&rdquo;</span>
+      <span class="results-scope" *ngIf="categoryWas">in {{ categoryWas === 'Artist' ? 'artists' : 'titles' }}</span>
+    </h2>
+  </header>
+
+  <div class="grid" *ngIf="isLoading">
+    <div class="skeleton-card" *ngFor="let _ of skeletons">
+      <div class="skeleton skeleton-image"></div>
+      <div class="skeleton skeleton-line wide"></div>
+      <div class="skeleton skeleton-line"></div>
+    </div>
+  </div>
+
+  <div class="grid" *ngIf="!isLoading && data.length > 0">
+    <a *ngFor="let el of data" class="card-link" [routerLink]="['/open', el['objectID']]">
+      <app-list-item
+        [imageurl]="imageFor(el)"
+        [title]="el['title'] || 'Untitled'"
+        [artistName]="artistFor(el)"
+        [date]="dateFor(el)">
+      </app-list-item>
     </a>
   </div>
-</div>
+
+  <div class="empty" *ngIf="!isLoading && hasSearched && data.length === 0">
+    <mat-icon class="empty-icon">search_off</mat-icon>
+    <p class="empty-title">No artworks found</p>
+    <p class="empty-hint">Try a different term, or switch between <em>Artwork</em> and <em>Artist</em>.</p>
+  </div>
+</section>

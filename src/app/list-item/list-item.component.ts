@@ -1,21 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Input } from "@angular/core";
-import * as config from "../config"
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-list-item',
   templateUrl: './list-item.component.html',
-  styleUrls: ['./list-item.component.css']
+  styleUrls: ['./list-item.component.css'],
+  standalone: false,
 })
-export class ListItemComponent implements OnInit {
+export class ListItemComponent {
+  @Input() imageurl = '';
+  @Input() artistName = '';
+  @Input() title = '';
+  @Input() date = '';
 
-  constructor() { }
-  @Input() imageurl : string = '';
-  @Input() artistName: string = '';
-  @Input() title : string = '';
-  ngOnInit(): void {
-    // //console.log(this.imageurl);
+  loaded = false;
 
+  onLoad() {
+    this.loaded = true;
   }
-
 }

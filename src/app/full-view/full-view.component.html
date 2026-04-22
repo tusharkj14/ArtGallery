@@ -1,30 +1,57 @@
-<div *ngIf="isLoading" fxLayout="row" fxLayoutAlign="space-around center" style="height:100%">
-  <mat-spinner [diameter]="100" [strokeWidth]="5"></mat-spinner>
-</div>
-<section *ngIf="!isLoading">
-  <div class="row">
-    <div class="col-md-6 gx-5 mb-4">
-      <div class="bg-image hover-overlay ripple shadow-2-strong rounded-5" data-mdb-ripple-color="light">
-        <img src="{{imageUrl}}" alt="{{el['thumbnail']['alt_text']}}" class="img-fluid m-2" />
+<main class="detail">
+  <button type="button" class="back" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back</span>
+  </button>
+
+  <div class="detail-grid">
+    <figure class="hero-image">
+      <div class="skeleton img-skeleton" *ngIf="!imageLoaded"></div>
+      <img *ngIf="imageUrl"
+        [src]="imageUrl"
+        [alt]="field('title') || 'Artwork'"
+        (load)="onImageLoad()"
+        [class.loaded]="imageLoaded" />
+      <figcaption class="credit" *ngIf="field('creditLine')">{{ field('creditLine') }}</figcaption>
+    </figure>
+
+    <aside class="info">
+      <p class="eyebrow" *ngIf="field('department')">{{ field('department') }}</p>
+      <h1 class="title">{{ field('title') || 'Untitled' }}</h1>
+      <p class="artist">
+        <span class="artist-name">{{ field('artistDisplayName') || 'Unknown artist' }}</span>
+        <span class="artist-bio" *ngIf="field('artistDisplayBio')">, {{ field('artistDisplayBio') }}</span>
+      </p>
+
+      <dl class="facts">
+        <ng-container *ngIf="field('objectDate')">
+          <dt>Date</dt><dd>{{ field('objectDate') }}</dd>
+        </ng-container>
+        <ng-container *ngIf="field('medium')">
+          <dt>Medium</dt><dd>{{ field('medium') }}</dd>
+        </ng-container>
+        <ng-container *ngIf="field('dimensions')">
+          <dt>Dimensions</dt><dd>{{ field('dimensions') }}</dd>
+        </ng-container>
+        <ng-container *ngIf="origin">
+          <dt>Origin</dt><dd>{{ origin }}</dd>
+        </ng-container>
+        <ng-container *ngIf="field('classification')">
+          <dt>Classification</dt><dd>{{ field('classification') }}</dd>
+        </ng-container>
+        <ng-container *ngIf="field('accessionNumber')">
+          <dt>Accession</dt><dd>{{ field('accessionNumber') }}</dd>
+        </ng-container>
+      </dl>
+
+      <div class="tags" *ngIf="hasTags">
+        <span class="tag" *ngFor="let t of el['tags']">{{ t.term }}</span>
       </div>
-    </div>
 
-    <div class="col-md-6 gx-5 mb-4 p-4">
-      <p><strong> Title : {{el['title'] ? el['title'] : "Unknown "}}</strong></p>
-
-      <p><strong>Artist : {{el['artist_title'] ? el['artist_title'] : "Unknown "}}</strong></p>
-
-      <p class="text-muted">
-        Artists/Artwork Description : {{el['artist_display'] ? el['artist_display'] : "Unknown "}}
-      </p>
-
-      <p class="text-muted">
-        Place of Origin : {{el['place_of_origin'] ? el['place_of_origin'] : "Unknown"}}
-      </p>
-
-      <p class="text-muted">
-        Completed: {{el['date_end'] ? el['date_end'] : "Unknown"}}
-      </p>
-    </div>
+      <a *ngIf="field('objectURL')" class="external" [href]="field('objectURL')" target="_blank" rel="noopener">
+        View on metmuseum.org
+        <mat-icon>north_east</mat-icon>
+      </a>
+    </aside>
   </div>
-</section>
+</main>

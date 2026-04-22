@@ -1,92 +1,92 @@
 import { Injectable } from '@angular/core';
-import * as config from "./config"
-import { Observable, of, ReplaySubject, shareReplay, Subject } from "rxjs";
-import { keyable } from "./keyable.interface";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, of, ReplaySubject, Subject, forkJoin } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import * as config from './config';
+import { keyable } from './keyable.interface';
+
+interface MetSearchResult {
+  total: number;
+  objectIDs: number[] | null;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ArtworksService {
-  public artworks !: keyable;
-  public dataSend = new ReplaySubject<keyable>(1) ;
-  public imageDataSend = new Subject<keyable>() ;
+  public dataSend = new ReplaySubject<keyable[]>(1);
+  public imageDataSend = new Subject<keyable>();
   public loadSpinner = new Subject<boolean>();
   public searchQuery: keyable = {};
-  constructor() { }
 
-  queryKeywords = function (categoryField: any, keywords: any) {
-    return {
-      query: {
-        bool: {
-          must: [
-            {
-              term: {
-                is_public_domain: true,
-              },
-            },
-            {
-              match: {
-                [categoryField]: {
-                  query: keywords,
-                },
-              },
-            },
-          ],
-        },
-      },
-      fields: config.ARTWORK_FIELDS,
-      limit: config.RESULTS_LIMIT,
-    };
-  };
-  urlEncodeQuery = (q: keyable) => encodeURIComponent(JSON.stringify(q));
+  constructor(private http: HttpClient) {}
 
-  getUrl(q: keyable, results: boolean){
-    // let query!any;
-    if (results){
-    this.searchQuery = q;
-
-      let query = this.queryKeywords(config.CATEGORY_FIELD[q['field']], q['searchQuery']);
-      return `${config.INFO_URL}${this.urlEncodeQuery(query)}`;
-    }
-
-    return `${config.IMAGE_API}${q['id']}`;
-  }
-
-  sendSearchQuery(){
+  sendSearchQuery() {
     return this.searchQuery;
   }
 
-  async fetchUrl(url: string, results: boolean){
+  clear() {
+    this.searchQuery = {};
+    this.dataSend.next([]);
+  }
+
+  search(field: string, query: string) {
+    this.searchQuery = { field, searchQuery: query };
     this.loadSpinner.next(true);
-    const init = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json',
-        'AIC-User-Agent' : `${config.REQUEST_HEADER_PROJECT_INFO}`
-      },
-    }
-    let tempdata: keyable = await fetch(url, init).then(response => response.json());
-    // this.dataSend of this.artworks;
-    if (results){
-      this.dataSend.next(tempdata);
-    }
-    else{
-      this.imageDataSend.next(tempdata);
+
+    const filterKey = config.CATEGORY_FIELD[field];
+    let params = new HttpParams().set('q', query).set('hasImages', '1');
+    if (filterKey) {
+      params = params.set(filterKey, '1');
     }
 
-    this.loadSpinner.next(false);
-    // //console.log(tempdata);
+    this.http
+      .get<MetSearchResult>(config.SEARCH_URL, { params })
+      .pipe(
+        switchMap((res) => {
+          const ids = (res.objectIDs ?? []).slice(0, config.RESULTS_LIMIT);
+          if (ids.length === 0) return of([] as keyable[]);
+          return forkJoin(
+            ids.map((id) =>
+              this.http
+                .get<keyable>(`${config.OBJECT_URL}${id}`)
+                .pipe(catchError(() => of(null)))
+            )
+          ).pipe(
+            switchMap((items) =>
+              of(
+                items.filter(
+                  (item): item is keyable =>
+                    !!item && !!item['primaryImageSmall']
+                )
+              )
+            )
+          );
+        }),
+        catchError(() => of([] as keyable[]))
+      )
+      .subscribe((items) => {
+        this.dataSend.next(items);
+        this.loadSpinner.next(false);
+      });
   }
 
-  getImageUrl(identifier: string, small : boolean){
-    return `${config.IMAGE_URL}${identifier}${small?config.SMALL_IMAGE_PART_URL:config.LARGE_IMAGE_PART_URL}`;
+  fetchObject(id: string | number) {
+    this.loadSpinner.next(true);
+    this.http
+      .get<keyable>(`${config.OBJECT_URL}${id}`)
+      .pipe(catchError(() => of(null)))
+      .subscribe((obj) => {
+        if (obj) this.imageDataSend.next(obj);
+        this.loadSpinner.next(false);
+      });
   }
 
-  sendData(results: boolean) :Observable<keyable>{
-    // this.loadSpinner.next(true);
-    return results? this.dataSend : this.imageDataSend;
+  sendData(results: boolean): Observable<any> {
+    return results ? this.dataSend : this.imageDataSend;
   }
 
-  sendLoadStatus(): Observable<boolean>{
+  sendLoadStatus(): Observable<boolean> {
     return this.loadSpinner;
   }
 }

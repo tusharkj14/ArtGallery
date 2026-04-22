@@ -1,38 +1,56 @@
-import { Component, OnInit } from '@angular/core';
-import { Input } from "@angular/core";
-import { ActivatedRoute, ParamMap } from "@angular/router";
-import { ArtworksService } from "../artworks.service";
-import { keyable } from "../keyable.interface";
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Location as CommonLocation } from '@angular/common';
+import { ArtworksService } from '../artworks.service';
+import { keyable } from '../keyable.interface';
 
 @Component({
   selector: 'app-full-view',
   templateUrl: './full-view.component.html',
-  styleUrls: ['./full-view.component.css']
+  styleUrls: ['./full-view.component.css'],
+  standalone: false,
 })
 export class FullViewComponent {
-  public imageUrl : string = '#';
-  constructor(private aserve: ArtworksService, private route: ActivatedRoute){}
-  public el !: keyable;
-  public isLoading : boolean = false;
-  ngOnInit(){
-    this.aserve.sendLoadStatus().subscribe(res=> this.isLoading = res);
-    this.route.paramMap.subscribe((res : ParamMap)=>{
-      if(res.has('id')){
-        // //console.log(res.get('id'));
-        let id = res.get('id');
-        let q : keyable = {'id' : id};
-        const url = this.aserve.getUrl(q, false);
-        this.aserve.fetchUrl(url, false);
+  private artworks = inject(ArtworksService);
+  private route = inject(ActivatedRoute);
+  private location = inject(CommonLocation);
 
-        this.aserve.sendData(false).subscribe(arr=>{
-          //console.log(arr);
-          // let idx = arr['data'].findIndex((obj: keyable)=> obj['id']==id);
-          this.el = arr['data'];
-          //console.log(this.el);
-          this.imageUrl = this.aserve.getImageUrl(this.el['image_id'] ,false);
-        })
-      }
+  imageUrl = '';
+  el: keyable = {};
+  isLoading = true;
+  imageLoaded = false;
+
+  ngOnInit() {
+    this.artworks.sendLoadStatus().subscribe((v) => (this.isLoading = v));
+    this.artworks.sendData(false).subscribe((obj: keyable) => {
+      if (!obj) return;
+      this.el = obj;
+      this.imageUrl = obj['primaryImage'] || obj['primaryImageSmall'] || '';
+      this.imageLoaded = false;
+    });
+    this.route.paramMap.subscribe((res: ParamMap) => {
+      const id = res.get('id');
+      if (id) this.artworks.fetchObject(id);
     });
   }
 
+  onImageLoad() {
+    this.imageLoaded = true;
+  }
+
+  goBack() {
+    this.location.back();
+  }
+
+  field(name: string): string {
+    return (this.el[name] ?? '').toString().trim();
+  }
+
+  get origin(): string {
+    return this.field('country') || this.field('culture') || this.field('region') || '';
+  }
+
+  get hasTags(): boolean {
+    return Array.isArray(this.el['tags']) && this.el['tags'].length > 0;
+  }
 }
